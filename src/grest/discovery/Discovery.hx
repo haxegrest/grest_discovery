@@ -1,6 +1,5 @@
 package grest.discovery;
 
-import haxe.macro.Expr;
 import haxe.DynamicAccess;
 import tink.http.Fetch.*;
 
@@ -11,14 +10,9 @@ class Discovery {
 		return fetch(url).all().next(function(res) return parse(res.body.toString()));
 	}
 	
-	public static function parse(json:String):Description {
-		return tink.Json.parse(json);
+	public static function parse(json:String) {
+		return tink.Json.parse((json:Description));
 	}
-}
-
-enum ResolvedType {
-	Complex(ct:ComplexType);
-	Enum(values:Array<String>);
 }
 
 typedef Description = {
