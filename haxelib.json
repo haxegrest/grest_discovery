@@ -1,0 +1,20 @@
+{
+  "name": "grest_discovery",
+  "license": "MIT",
+  "tags": [
+    "google",
+    "rest",
+    "api",
+    "discovery"
+  ],
+  "classPath": "src",
+  "contributors": [
+    "kevinresol"
+  ],
+  "releasenote": "initial release",
+  "version": "0.0.0",
+  "dependencies": {
+    "tink_http_fetch": "",
+    "tink_json": ""
+  }
+}

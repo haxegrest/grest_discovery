@@ -1,0 +1,6 @@
+tests.hxml
+-js bin/node/tests.js
+
+-lib grest_discovery
+-lib travix
+-lib hxnodejs
