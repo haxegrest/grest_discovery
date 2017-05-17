@@ -1,12 +1,14 @@
 package ;
 
-import grest.discovery.Discovery;
+import tink.testrunner.*;
+import tink.unit.*;
 
 class RunTests {
 
-  static function main() {
-    Discovery.parseUrl('https://www.googleapis.com/discovery/v1/apis/games/v1/rest')
-      .handle(function(des) trace(des));
-  }
-  
+	static function main() {
+		Runner.run(TestBatch.make([
+			new ParserTest(),
+		])).handle(Runner.exit);
+	}
+
 }

@@ -12,91 +12,7 @@ class Discovery {
 	}
 	
 	public static function parse(json:String):Description {
-		return haxe.Json.parse(json);
-	}
-}
-
-@:forward
-abstract Ref(Ref_) from Ref_ to Ref_ {
-	public var _ref(get, set):String;
-	
-	inline function get__ref():String
-		return Helper._get(this, "$ref");
-	inline function set__ref(v:String):String
-		return Helper._set(this, "$ref", v);
-}
-
-@:forward
-abstract Parameter(Parameter_) from Parameter_ to Parameter_ {
-	public var _ref(get, set):String;
-	public var _default(get, set):String;
-	public var _enum(get, set):Array<String>;
-	
-	public function resolveType():ResolvedType {
-		switch _ref {
-			case null: // continue
-			case ref: return Complex(TPath({name: ref, pack: []}));
-		}
-		
-		var ct = switch this.type {
-			case 'string': macro:String;
-			case 'integer': macro:Int;
-			case 'number': macro:Float;
-			case 'boolean': macro:Bool;
-			case 'any': macro:tink.json.Value;
-			case 'array':
-				switch this.items.resolveType() {
-					case Complex(ct): macro:Array<$ct>;
-					case t: throw 'unhandled nested type $t';
-				}
-			case 'object':
-				if(this.additionalProperties != null) {
-					switch this.additionalProperties.resolveType() {
-						case Complex(ct): macro:haxe.DynamicAccess<$ct>;
-						case t: throw 'unhandled nested type $t';
-					}
-				} else if(this.properties != null) {
-					TAnonymous([for(key in this.properties.keys()) {
-						name: key,
-						kind: FVar(switch this.properties.get(key).resolveType() {
-							case Complex(ct): ct;
-							case t: throw 'TODO: handle enum type in anon obj field';
-						}),
-						pos: null,
-					}]);
-				} else {
-					throw 'Expected `additionalProperties` or `properties` in an "object"';
-				}
-			case v: throw 'unhandled type $v';
-		}
-		
-		return switch _enum {
-			case null: Complex(ct);
-			case values: Enum(values);
-		}
-	}
-	
-	inline function get__ref():String
-		return Helper._get(this, "$ref");
-	inline function set__ref(v:String):String
-		return Helper._set(this, "$ref", v);
-	inline function get__default():String
-		return Helper._get(this, "default");
-	inline function set__default(v:String):String
-		return Helper._set(this, "default", v);
-	inline function get__enum():Array<String>
-		return Helper._get(this, "enum");
-	inline function set__enum(v:Array<String>):Array<String>
-		return Helper._set(this, "enum", v);
-	
-}
-
-private class Helper {
-	public static inline function _get<T, V>(o:T, k:String):V
-		return Reflect.field(o, k);
-	public static inline function _set<T, V>(o:T, k:String, v:V):V {
-		Reflect.setField(o, k, v);
-		return v;
+		return tink.Json.parse(json);
 	}
 }
 
@@ -106,60 +22,62 @@ enum ResolvedType {
 }
 
 typedef Description = {
-	kind:String, // "discovery#restDescription"
-	discoveryVersion:String, //"v1"
-	id:String,
-	name:String,
-	version:String,
-	revision:String,
-	title:String,
-	description:String,
-	icons: {
+	var kind:String; // "discovery#restDescription"
+	var discoveryVersion:String; //"v1"
+	var id:String;
+	var name:String;
+	var version:String;
+	@:optional var revision:String;
+	@:optional var title:String;
+	@:optional var description:String;
+	@:optional var icons: {
 		x16:String,
 		x32:String
-	},
-	documentationLink:String,
-	labels:Array<String>,
-	protocol:String, //"rest"
+	};
+	@:optional var documentationLink:String;
+	@:optional var labels:Array<String>;
+	var protocol:String; //"rest"
 	// baseUrl:String, // deprecated
 	// basePath:String, // deprecated
-	rootUrl:String,
-	servicePath:String,
-	batchPath:String, //"batch"
-	parameters:DynamicAccess<Parameter>,
-	auth: {
+	var rootUrl:String;
+	var servicePath:String;
+	var batchPath:String; //"batch"
+	@:optional var parameters:DynamicAccess<Parameter>;
+	@:optional var auth: {
 		oauth2: {
 			scopes: DynamicAccess<{description:String}>
 		}
-	},
-	features:Array<String>,
-	schemas:DynamicAccess<Parameter>,
-	methods:DynamicAccess<Method>,
-	resources:DynamicAccess<Resource>
+	};
+	@:optional var features:Array<String>;
+	@:optional var schemas:DynamicAccess<Parameter>;
+	@:optional var methods:DynamicAccess<Method>;
+	@:optional var resources:DynamicAccess<Resource>;
 }
 
 typedef Resource = {
-	methods:DynamicAccess<Method>,
-	resources:DynamicAccess<Resource>,
+	@:optional var methods:DynamicAccess<Method>;
+	@:optional var resources:DynamicAccess<Resource>;
 }
 
-typedef Ref_ = {};
+typedef Ref = {
+	@:json("$ref") var ref:String;
+};
 
 typedef Method = {
-	id:String,
-	path:String,
-	httpMethod:String,
-	description:String,
-	parameters:DynamicAccess<Parameter>,
-	parameterOrder:Array<String>,
-	request:Ref,
-	response:Ref,
-	scopes:Array<String>,
-	supportsMediaDownload:Bool,
-	supportsMediaUpload:Bool,
-	mediaUpload: {
+	var id:String;
+	var path:String;
+	var httpMethod:String;
+	@:optional var description:String;
+	@:optional var parameters:DynamicAccess<Parameter>;
+	@:optional var parameterOrder:Array<String>;
+	@:optional var request:Ref;
+	@:optional var response:Ref;
+	@:optional var scopes:Array<String>;
+	@:optional var supportsMediaDownload:Bool;
+	@:optional var supportsMediaUpload:Bool;
+	@:optional var mediaUpload: {
 		accept:Array<String>,
-		maxSize:String,
+		?maxSize:String,
 		protocols: {
 			simple: {
 				multipart:Bool, // true
@@ -170,30 +88,31 @@ typedef Method = {
 				path:String
 			}
 		}
-	},
-	supportsSubscription:Bool
+	};
+	@:optional var supportsSubscription:Bool;
 }
 
-typedef Parameter_ = {
-	id:String,
-	type:String,
-	description:String,
-	// default:String,
-	required:Bool,
-	format:String,
-	pattern:String,
-	minimum:String,
-	maximum:String,
-	// enum:Array<String>,
-	enumDescriptions:Array<String>,
-	repeated:Bool,
-	location:String,
-	properties:DynamicAccess<JsonSchema>,
-	additionalProperties:JsonSchema,
-	items:JsonSchema,
-	annotations: {
+typedef Parameter = {
+	@:optional @:json("$ref") var ref:String;
+	@:optional var id:String;
+	@:optional var type:String;
+	@:optional var description:String;
+	@:optional @:json('default') var default_:String;
+	@:optional var required:Bool;
+	@:optional var format:String;
+	@:optional var pattern:String;
+	@:optional var minimum:String;
+	@:optional var maximum:String;
+	@:optional @:json('enum') var enum_:Array<String>;
+	@:optional var enumDescriptions:Array<String>;
+	@:optional var repeated:Bool;
+	@:optional var location:String;
+	@:optional var properties:DynamicAccess<JsonSchema>;
+	@:optional var additionalProperties:JsonSchema;
+	@:optional var items:JsonSchema;
+	@:optional var annotations: {
 		required:Array<String>
-	}
+	};
 }
 
 
