@@ -20,6 +20,7 @@ class ParserTest {
 	
 	static function getAllApiUrl() {
 		return new grest.discovery.Directory().apis()
-			.next(v -> [for(item in v.items) if(item.preferred) item.discoveryRestUrl]);
+			.next(v -> [for(item in v.items) if(item.preferred) item.discoveryRestUrl])
+			.next(v -> v.filter(url -> url != "https://baremetalsolution.googleapis.com/$discovery/rest?version=v1")); // somehow this gives a 403 error
 	}
 }
