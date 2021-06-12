@@ -2,3 +2,6 @@
 -main RunTests
 -dce full
 -lib tink_unittest
+
+-D tink-json-compact-code
+-D analyzer-optimize
