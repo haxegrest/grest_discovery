@@ -77,7 +77,7 @@ typedef Method = {
 				multipart:Bool, // true
 				path:String
 			},
-			resumable: {
+			?resumable: {
 				multipart:Bool, // true
 				path:String
 			}

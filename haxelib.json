@@ -14,7 +14,7 @@
   "releasenote": "initial release",
   "version": "0.0.0",
   "dependencies": {
-    "tink_http_fetch": "",
+    "tink_web": "",
     "tink_json": ""
   }
 }

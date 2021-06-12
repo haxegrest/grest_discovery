@@ -2,5 +2,22 @@
     "version": "2.0.0",
     "command": "haxelib",
     "args": ["run","travix","node"],
-    "problemMatcher": "$haxe"
+    "problemMatcher": "$haxe",
+    "tasks": [
+        {
+            "type": "shell",
+            "command": "lix run travix node",
+            "problemMatcher": [
+                "$haxe-absolute",
+                "$haxe",
+                "$haxe-error",
+                "$haxe-trace"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "label": "run tests"
+        }
+    ]
 }
